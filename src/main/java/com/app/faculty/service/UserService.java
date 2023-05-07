@@ -36,7 +36,7 @@ public class UserService {
                     .username(userDTO.getUsername())
                     .role(roleType)
                     .password(new BCryptPasswordEncoder().encode(userDTO.getPassword()))
-                    .active(true).build());
+                    .isActive(true).build());
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed operation to save new user");
         }

@@ -12,6 +12,7 @@ public class MainController {
     @GetMapping("/")
     public String homePage(@AuthenticationPrincipal UserDetailsImpl currentUser, Model model) {
         if (currentUser != null){
+            System.out.println(currentUser.getAuthorities());
             model.addAttribute("name", currentUser.getUsername());
         }else {
             model.addAttribute("name", "No user has logged in");

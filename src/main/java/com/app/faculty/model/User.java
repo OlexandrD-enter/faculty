@@ -22,7 +22,7 @@ public class User {
     private String username;
     private String password;
     @Column(name = "is_active")
-    private boolean active;
+    private boolean isActive;
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
