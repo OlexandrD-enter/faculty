@@ -4,11 +4,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 <div th:replace="header :: header">
 </div>
-<p th:text="'Hello, ' + ${name} + '!'" />
+<div class="container my-9" style="margin-top: 150px">
+    <table class="table table-bordered table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col"><span class="d-flex justify-content-center" th:text="#{course.title}"></span></th>
+            <th scope="col"><span class="d-flex justify-content-center" th:text="#{course.topic}"></span></th>
+            <th scope="col"><span class="d-flex justify-content-center" th:text="#{course.date_start}"></span></th>
+            <th scope="col"><span class="d-flex justify-content-center" th:text="#{course.date_end}"></span></th>
+            <th scope="col"><span class="d-flex justify-content-center" th:text="#{course.lecturer}"></span></th>
+            <th scope="col"><span class="d-flex justify-content-center" th:text="#{course.amount}"></span></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="courses : ${courseList}">
+            <td><span class="d-flex justify-content-center" th:text="${courses.title}"></span></td>
+            <td><span class="d-flex justify-content-center" th:text="${courses.topic}"></span></td>
+            <td><span class="d-flex justify-content-center"
+                      th:text="${#temporals.format(courses.dateStart, 'yyyy-MM-dd, HH:mm')}"></span></td>
+            <td><span class="d-flex justify-content-center"
+                      th:text="${#temporals.format(courses.dateEnd, 'yyyy-MM-dd, HH:mm')}"></span></td>
+            <td><span class="d-flex justify-content-center" th:text="${courses.userLecturer.getFirstName() + ' ' + courses.userLecturer.getLastName()}"></span></td>
+            <td><span class="d-flex justify-content-center" th:text="${courses.amountStudent}"></span></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(courseList)}" class="btn-warning">
+            <td colspan="9" align="center">Not found</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

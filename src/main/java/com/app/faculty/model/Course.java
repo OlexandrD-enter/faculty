@@ -27,5 +27,5 @@ public class Course {
     private Long amountStudent;
     @ManyToOne
     @JoinColumn
-    private Lecturer lecturer;
+    private User userLecturer;
 }

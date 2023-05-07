@@ -1,6 +1,6 @@
 package com.app.faculty.dto;
 
-import com.app.faculty.model.Lecturer;
+import com.app.faculty.model.User;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotBlank;
@@ -26,6 +26,5 @@ public class CourseDTO {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime dateEnd;
     private Long amountStudent;
-    private Lecturer lecturer;
-
+    private User userLecturer;
 }
