@@ -8,6 +8,8 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,7 +17,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -40,5 +42,9 @@ public class UserService {
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed operation to save new user");
         }
+    }
+
+    public List<User> findUsersByRoleType(Role role) {
+        return userRepository.findAllByRole(role);
     }
 }

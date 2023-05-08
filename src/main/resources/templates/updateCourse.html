@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="ISO-8859-1">
+  <title>Faculty</title>
+
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="header :: header">
+</div>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-md-offset-3">
+      <div th:if="${param.success}">
+        <div class="alert alert-info">You've successfully updated course.</div>
+      </div>
+
+      <h2>Update Course</h2>
+
+      <form th:action="@{{id}(id=${course.id})}" th:method="put" th:object="${course}" enctype="multipart/form-data">
+        <div th:if="${param.error}">
+          <div class="alert alert-danger">Invalid data.</div>
+        </div>
+        <div class="form-group">
+          <input type="hidden" id="id" class="form-control" th:field="*{id}"/>
+        </div>
+        <div class="form-group">
+          <input type="hidden" id="amountStudent" class="form-control" th:field="*{amountStudent}"/>
+        </div>
+        <div class="form-group">
+          <label class="control-label text-primary" for="title">Title</label>
+          <input id="title" class="form-control" th:field="*{title}"/>
+          <p class="text-danger"><label
+                  th:if="${#fields.hasErrors('title')}" th:text="#{not_valid_title}"
+                  class="validation-message"></label></p>
+        </div>
+        <div class="form-group">
+          <label class="control-label text-primary" for="topic">Topic</label>
+          <input id="topic" class="form-control" th:field="*{topic}"
+          />
+          <p class="text-danger"><label
+                  th:if="${#fields.hasErrors('topic')}" th:text="#{not_valid_topic}"
+                  class="validation-message"></label></p>
+        </div>
+        <div class="form-group">
+          <label class="control-label text-primary" for="dateStart">Date start</label>
+          <input type="datetime-local" id="dateStart" class="form-control"
+                 th:field="*{dateStart}"
+          />
+          <p class="text-danger"><label
+                  th:if="${#fields.hasErrors('dateStart')}" th:text="#{not_valid_dateStart}"
+                  class="validation-message"></label></p>
+        </div>
+        <div class="form-group">
+          <label class="control-label text-primary" for="dateEnd"> Date end</label>
+          <input type="datetime-local" id="dateEnd" class="form-control" th:field="*{dateEnd}"
+          />
+          <p class="text-danger"><label
+                  th:if="${#fields.hasErrors('dateEnd')}" th:text="#{not_valid_dateEnd}"
+                  class="validation-message"></label></p>
+        </div>
+        <div class="form-group">
+          <label class="control-label text-primary">Lecturer</label>
+          <select class="form-control" th:field="*{userLecturer}">
+            <option th:each="lecturerSelected : ${lecturerList}"
+                    th:value="${lecturerSelected.getId()}"
+                    th:text="${lecturerSelected.getFirstName() + ' ' + lecturerSelected.getLastName()}"></option>
+            >
+          </select>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-success">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

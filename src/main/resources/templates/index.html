@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Faculty</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 <div th:replace="header :: header">
 </div>
-<div class="container my-9" style="margin-top: 150px">
+<button sec:authorize="hasRole('ROLE_ADMIN')" style="margin-left: 215px; margin-top: 50px" type="button" class="btn btn-success"><a style="text-decoration: none;
+    color: #fafafa;" th:href="@{/courses/create}" th:text="#{course.add}"></a></button>
+<div class="container my-9" style="margin-top: 100px">
     <table class="table table-bordered table-sm">
         <thead class="thead-dark">
         <tr>
@@ -20,6 +22,11 @@
             <th scope="col"><span class="d-flex justify-content-center" th:text="#{course.date_end}"></span></th>
             <th scope="col"><span class="d-flex justify-content-center" th:text="#{course.lecturer}"></span></th>
             <th scope="col"><span class="d-flex justify-content-center" th:text="#{course.amount}"></span></th>
+            <th scope="col"><span class="d-flex justify-content-center" th:text="#{course.enroll}"></span></th>
+            <th scope="col" sec:authorize="hasRole('ROLE_ADMIN')"><span class="d-flex justify-content-center"
+                                                                        th:text="#{course.update}"></span></th>
+            <th scope="col" sec:authorize="hasRole('ROLE_ADMIN')"><span class="d-flex justify-content-center"
+                                                                        th:text="#{course.delete}"></span></th>
         </tr>
         </thead>
         <tbody>
@@ -30,8 +37,28 @@
                       th:text="${#temporals.format(courses.dateStart, 'yyyy-MM-dd, HH:mm')}"></span></td>
             <td><span class="d-flex justify-content-center"
                       th:text="${#temporals.format(courses.dateEnd, 'yyyy-MM-dd, HH:mm')}"></span></td>
-            <td><span class="d-flex justify-content-center" th:text="${courses.userLecturer.getFirstName() + ' ' + courses.userLecturer.getLastName()}"></span></td>
+            <td><span class="d-flex justify-content-center"
+                      th:text="${courses.userLecturer.getFirstName() + ' ' + courses.userLecturer.getLastName()}"></span>
+            </td>
             <td><span class="d-flex justify-content-center" th:text="${courses.amountStudent}"></span></td>
+            <td>
+                <form th:action="@{/courses}" method="post" class="d-flex justify-content-center">
+                    <input type="hidden" name="coursesId" id="coursesId" th:value="${courses.id}"/>
+                    <button type="submit" class="btn btn-success d-flex justify-content-center" th:text="#{course.enroll}" ></button>
+                </form>
+            </td>
+            <td sec:authorize="hasRole('ROLE_ADMIN')">
+                <form th:action="@{courses/{id}(id=${courses.id})}" th:method="get">
+                    <button type="submit" class="btn btn-primary d-flex justify-content-center"
+                            th:text="#{course.update}"></button>
+                </form>
+            </td>
+            <td sec:authorize="hasRole('ROLE_ADMIN')">
+                <form th:action="@{courses/{id}(id=${courses.id})}" th:method="delete">
+                    <button type="submit" class="btn btn-danger d-flex justify-content-center"
+                            th:text="#{course.delete}"></button>
+                </form>
+            </td>
         </tr>
         <tr th:if="${#lists.isEmpty(courseList)}" class="btn-warning">
             <td colspan="9" align="center">Not found</td>

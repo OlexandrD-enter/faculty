@@ -28,7 +28,7 @@ public class RegistrationController {
     }
 
     @GetMapping()
-    public String registration(Model model) {
+    public String showRegistrationForm(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             model.addAttribute("userForm", new UserDTO());
@@ -38,7 +38,8 @@ public class RegistrationController {
     }
 
     @PostMapping()
-    public ModelAndView addUser(@ModelAttribute("userForm") @Valid UserDTO userDTO, BindingResult result, ModelAndView modelAndView) {
+    public ModelAndView registerNewUser(@ModelAttribute("userForm") @Valid UserDTO userDTO,
+                                        BindingResult result, ModelAndView modelAndView) {
         if (result.hasErrors()) {
             modelAndView.addObject("failureMessage", "signup.label.error");
         } else {
