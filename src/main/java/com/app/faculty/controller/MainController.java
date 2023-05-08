@@ -1,19 +1,16 @@
 package com.app.faculty.controller;
 
-import com.app.faculty.dto.CourseDTO;
 import com.app.faculty.model.Course;
-import com.app.faculty.model.Role;
-import com.app.faculty.model.User;
 import com.app.faculty.service.CourseService;
-import com.app.faculty.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -21,69 +18,34 @@ import java.util.List;
 public class MainController {
 
     private final CourseService courseService;
-    private final UserService userService;
 
     @Autowired
-    public MainController(CourseService courseService, UserService userService) {
+    public MainController(CourseService courseService) {
         this.courseService = courseService;
-        this.userService = userService;
     }
 
     @GetMapping()
     public String showCoursesPage(Model model) {
-        List<Course> courseList = courseService.findAll();
+        return pageableView(model, 1, "id", "asc", null);
+    }
+
+    @RequestMapping("/page/{pageNum}")
+    public String pageableView(Model model,
+                           @PathVariable(name = "pageNum") int pageNum,
+                           @Param("sortField") String sortField,
+                           @Param("sortDir") String sortDir,
+                           @Param("keyword") String keyword){
+
+        Page<Course> page = courseService.findPaginatedCourses(pageNum, sortField, sortDir, keyword);
+        List<Course> courseList = page.getContent();
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+        model.addAttribute("keyword", keyword);
         model.addAttribute("courseList", courseList);
         return "index";
-    }
-
-    @PostMapping()
-    public String enrollAtCourse(@RequestParam("coursesId") Long courseId) {
-        System.out.println(courseId);
-        return "redirect:/courses";
-    }
-
-    @DeleteMapping("{id}")
-    public String deleteCourseById(@PathVariable Long id) {
-        courseService.deleteById(id);
-        return "redirect:/courses";
-    }
-
-    @GetMapping("{id}")
-    public String updateCoursePage(Model model, @PathVariable Long id) {
-        Course course = courseService.findCourseById(id);
-        List<User> lecturerList = userService.findUsersByRoleType(Role.ROLE_LECTURER);
-        model.addAttribute("course", course);
-        model.addAttribute("lecturerList", lecturerList);
-        return "updateCourse";
-    }
-
-    @PutMapping("{id}")
-    public String saveCourse(@ModelAttribute("course") @Valid CourseDTO courseDTO,
-                             BindingResult bindingResult, @PathVariable Long id, Model model) {
-        model.addAttribute("lecturerList", userService.findUsersByRoleType(Role.ROLE_LECTURER));
-        if (bindingResult.hasErrors()) {
-            return "updateCourse";
-        }
-        courseService.saveCourse(courseDTO);
-        return "redirect:/courses/{id}?success";
-    }
-
-    @GetMapping("/create")
-    public String addCourse(Model model) {
-        model.addAttribute("courseForm", new CourseDTO());
-        model.addAttribute("lecturerList", userService.findUsersByRoleType(Role.ROLE_LECTURER));
-        return "createCourse";
-    }
-
-    @PostMapping("/create")
-    public String addCourse(@ModelAttribute("courseForm") @Valid CourseDTO courseDTO,
-                            BindingResult bindingResult, Model model) {
-        model.addAttribute("lecturerList", userService.findUsersByRoleType(Role.ROLE_LECTURER));
-        if (bindingResult.hasErrors()) {
-            return "/createCourse";
-        }
-        courseDTO.setAmountStudent(0L);
-        courseService.saveCourse(courseDTO);
-        return "redirect:/courses/create?success";
     }
 }
