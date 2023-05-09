@@ -6,6 +6,9 @@ import com.app.faculty.model.User;
 import com.app.faculty.repository.UserRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,4 +50,10 @@ public class UserService {
     public List<User> findUsersByRoleType(Role role) {
         return userRepository.findAllByRole(role);
     }
+
+    public Page<User> findPaginated(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return userRepository.findAllByRole(pageable, Role.ROLE_USER);
+    }
+
 }
