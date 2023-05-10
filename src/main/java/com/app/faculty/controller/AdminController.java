@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -40,5 +41,11 @@ public class AdminController {
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("listUsers", listUsers);
         return "users";
+    }
+
+    @PutMapping("/users/{id}")
+    public String disableUser(Model model, @PathVariable(value = "id") Long id) {
+        userService.disableUserById(id);
+        return "redirect:/admin/users/";
     }
 }
