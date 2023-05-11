@@ -27,8 +27,7 @@ public class UserService {
     }
 
     public User findUserByUserName(@NonNull String username) {
-        return userRepository.findByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("Could not find user: " + username));
+        return userRepository.findByUsername(username).orElse(null);
     }
 
     public Optional<User> findByEmail(String email) {
@@ -38,6 +37,7 @@ public class UserService {
     public User saveUser(UserDTO userDTO, Role roleType) {
         try {
             return userRepository.save(User.builder()
+                    .id(userDTO.getId())
                     .firstName(userDTO.getFirstName())
                     .lastName(userDTO.getLastName())
                     .email(userDTO.getEmail())
@@ -50,13 +50,21 @@ public class UserService {
         }
     }
 
+    public User updateUser(User user) {
+        try {
+            return userRepository.save(user);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed operation to update user");
+        }
+    }
+
     public List<User> findUsersByRoleType(Role role) {
         return userRepository.findAllByRole(role);
     }
 
-    public Page<User> findPaginated(int pageNo, int pageSize) {
+    public Page<User> findPaginated(int pageNo, int pageSize, Role role) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-        return userRepository.findAllByRole(pageable, Role.ROLE_USER);
+        return userRepository.findAllByRole(pageable, role);
     }
 
     @Transactional
@@ -67,4 +75,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void deleteUserById(Long id){
+        userRepository.deleteById(id);
+    }
+
+    public User findUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }
