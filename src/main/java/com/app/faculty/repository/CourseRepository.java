@@ -5,13 +5,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDateTime;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
     void deleteById(Long id);
-    @Query("SELECT c FROM Course c WHERE c.topic LIKE %?1%"
-            + " OR c.userLecturer.lastName LIKE %?1%" +
-            "OR c.title LIKE %?1%" +
-            "OR CONCAT(c.dateStart, '') LIKE %?1%" +
-            "OR CONCAT(c.dateEnd, '') LIKE %?1%")
-    Page<Course> findAll(String keyword, Pageable pageable);
+    @Query("SELECT c FROM Course c WHERE c.dateEnd > :localDateTime AND " +
+            "(c.topic LIKE %:keyword% OR c.userLecturer.lastName LIKE %:keyword% " +
+            "OR c.title LIKE %:keyword% OR CONCAT(c.dateStart, '') LIKE %:keyword% " +
+            "OR CONCAT(c.dateEnd, '') LIKE %:keyword%)")
+    Page<Course> findAll(@Param("keyword") String keyword, Pageable pageable, @Param("localDateTime") LocalDateTime localDateTime);
+
+    Page<Course> findAllByDateEndAfter(Pageable pageable, LocalDateTime localDateTime);
 }

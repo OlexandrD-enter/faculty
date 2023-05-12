@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -25,13 +27,13 @@ public class UserCourseService {
 
     @Autowired
     public UserCourseService(UserCoursesRepository userCoursesRepository, UserRepository userRepository,
-                             CourseRepository courseRepository){
+                             CourseRepository courseRepository) {
         this.userCoursesRepository = userCoursesRepository;
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
     }
 
-    public UserCourses findById(Long id){
+    public UserCourses findById(Long id) {
         return userCoursesRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("Not found userCourse with id: " + id));
     }
@@ -48,8 +50,22 @@ public class UserCourseService {
                     .course(course)
                     .user(user.getUser())
                     .build());
-        }catch (DataIntegrityViolationException ex){
+        } catch (DataIntegrityViolationException ex) {
             throw new MyDuplicateEntryException("Duplicate entry", ex);
         }
     }
+
+    public List<UserCourses> presentCourses(Long id) {
+        return userCoursesRepository.findPresentCourses(id, LocalDateTime.now());
+    }
+
+    public List<UserCourses> futureCourses(Long id) {
+        return userCoursesRepository.findFutureCourses(id, LocalDateTime.now());
+    }
+
+    public List<UserCourses> pastCourses(Long id) {
+        return userCoursesRepository.findPastCourses(id, LocalDateTime.now());
+    }
+
+
 }

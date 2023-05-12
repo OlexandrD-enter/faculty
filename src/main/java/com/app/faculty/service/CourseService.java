@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -59,8 +60,8 @@ public class CourseService {
                         : Sort.by(sortField).descending()
         );
         if(keyword != null){
-            return courseRepository.findAll(keyword, pageable);
+            return courseRepository.findAll(keyword, pageable, LocalDateTime.now());
         }
-        return courseRepository.findAll(pageable);
+        return courseRepository.findAllByDateEndAfter(pageable, LocalDateTime.now());
     }
 }
