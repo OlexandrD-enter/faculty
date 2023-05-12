@@ -1,10 +1,12 @@
 package com.app.faculty.controller;
 
 import com.app.faculty.dto.CourseDTO;
+import com.app.faculty.exception.MyDuplicateEntryException;
 import com.app.faculty.model.Course;
 import com.app.faculty.model.Role;
 import com.app.faculty.model.User;
 import com.app.faculty.service.CourseService;
+import com.app.faculty.service.UserCourseService;
 import com.app.faculty.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,17 +22,24 @@ import java.util.List;
 public class CourseController {
     private final CourseService courseService;
     private final UserService userService;
+    private final UserCourseService userCourseService;
 
     @Autowired
-    public CourseController(CourseService courseService, UserService userService) {
+    public CourseController(CourseService courseService, UserService userService,
+                            UserCourseService userCourseService) {
         this.courseService = courseService;
         this.userService = userService;
+        this.userCourseService = userCourseService;
     }
 
     @PostMapping()
     public String enrollAtCourse(@RequestParam("coursesId") Long courseId) {
-        System.out.println(courseId);
-        return "redirect:/courses";
+        try {
+            userCourseService.enrollOnCourse(courseId);
+            return "redirect:/courses?success";
+        } catch (MyDuplicateEntryException ex) {
+            return "redirect:/courses?error";
+        }
     }
 
     @DeleteMapping("{id}")

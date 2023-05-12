@@ -11,6 +11,12 @@
 <div th:replace="header :: header">
 </div>
 <br>
+<div th:if="${param.success}">
+    <div class="alert alert-info d-flex justify-content-center">You've successfully enrolled</div>
+</div>
+<div th:if="${param.error}">
+    <div class="alert alert-danger d-flex justify-content-center">You've already enrolled</div>
+</div>
 <div style="margin-left: 163px">
     <form th:action="@{/courses/page/1}">
         <span th:text="#{course.search} + ':'"></span> <input type="text" name="keyword" id="keyword" size="50" th:value="${keyword}" required/>
