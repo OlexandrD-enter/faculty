@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +25,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User findUserByUserName(@NonNull String username) {
-        return userRepository.findByUsername(username).orElse(null);
+    public Optional<User> findUserByUserName(@NonNull String userName) {
+        return userRepository.findByUsername(userName);
     }
 
     public Optional<User> findByEmail(String email) {
@@ -67,7 +66,6 @@ public class UserService {
         return userRepository.findAllByRole(pageable, role);
     }
 
-    @Transactional
     public User disableUserById(Long id){
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UsernameNotFoundException("Could not find user with id: " + id));

@@ -67,5 +67,24 @@ public class UserCourseService {
         return userCoursesRepository.findPastCourses(id, LocalDateTime.now());
     }
 
+    public List<UserCourses> findCoursesByLecturerId(Long id){
+        return userCoursesRepository.findUserCoursesByCourseUserLecturerId(id);
+    }
+
+    public List<UserCourses> findLecturerCoursesPresent(Long id){
+        return userCoursesRepository.findUserCoursesByLecturerIdAndPresentCourses(id, LocalDateTime.now());
+    }
+
+    public List<UserCourses> findLecturerCoursesPast(Long id){
+        return userCoursesRepository.findUserCoursesByLecturerIdAndPastCourses(id, LocalDateTime.now());
+    }
+
+    public List<UserCourses> findLecturerCoursesFuture(Long id){
+        return userCoursesRepository.findUserCoursesByLecturerIdAndFutureCourses(id, LocalDateTime.now());
+    }
+
+    public UserCourses save(UserCourses course) {
+        return userCoursesRepository.save(course);
+    }
 
 }

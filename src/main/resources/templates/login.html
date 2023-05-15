@@ -14,14 +14,13 @@
 	<div class="row justify-content-center">
 		<div class = "col-md-6 col-md-offset-3">
 
-			<h1 th:text="#{log_in}"></h1>
+			<h1 th:text="#{login}"></h1>
 			<form th:action="@{/login}" method="post">
 				<div th:if="${param.error}">
 					<div class="alert alert-danger">Invalid username or
 						password or you`re blocked.</div>
 				</div>
 
-				<!-- logout message -->
 				<div th:if="${param.logout}">
 					<div class="alert alert-info">You have been logged out.</div>
 				</div>
@@ -29,12 +28,12 @@
 				<div class = "form-group">
 					<label for ="username" class="text-primary" th:text="#{username}"></label> :
 					<input type="text" class = "form-control" id ="username" name = "username"
-						   placeholder="Enter username" autofocus="autofocus">
+						   placeholder="Enter username" autofocus="autofocus" required>
 				</div>
 				<div class="form-group">
 					<label for="password" class="text-primary" th:text="#{password}"></label>: <input type="password"
 																									  id="password" name="password" class="form-control"
-																									  placeholder="Enter password" />
+																									  placeholder="Enter password" required/>
 				</div>
 				<div class="form-group">
 					<div class="row">

@@ -46,7 +46,7 @@ public class RegistrationController {
             if (userService.findByEmail(userDTO.getEmail()).isPresent()) {
                 modelAndView.addObject("failureMessage", "signup.label.emailRegistered");
                 modelAndView.setViewName("registration");
-            } else if (userService.findUserByUserName(userDTO.getUsername()) != null) {
+            } else if (userService.findUserByUserName(userDTO.getUsername()).isPresent()) {
                 modelAndView.addObject("failureMessage", "signup.label.alreadyRegistered");
                 modelAndView.setViewName("registration");
             } else if (!userDTO.getPassword().equals(userDTO.getPasswordConfirm())) {
